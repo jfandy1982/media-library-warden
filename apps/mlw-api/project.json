@@ -1,0 +1,79 @@
+{
+  "name": "mlw-api",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/mlw-api/src",
+  "projectType": "application",
+  "tags": ["type:app", "domain:api"],
+  "targets": {
+    "build": {
+      "cache": true,
+      "configurations": {
+        "development": {
+          "args": ["--node-env=development"]
+        }
+      },
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "webpack-cli build",
+        "cwd": "apps/mlw-api"
+      },
+      "outputs": ["{workspaceRoot}/dist/apps/mlw-api"]
+    },
+    "copy-workspace-modules": {
+      "cache": true,
+      "dependsOn": ["build"],
+      "executor": "@nx/js:copy-workspace-modules",
+      "options": {
+        "buildTarget": "build"
+      },
+      "outputs": ["{workspaceRoot}/dist/apps/mlw-api/workspace_modules"]
+    },
+    "prune": {
+      "dependsOn": ["prune-lockfile", "copy-workspace-modules"],
+      "executor": "nx:noop"
+    },
+    "prune-lockfile": {
+      "cache": true,
+      "dependsOn": ["build"],
+      "executor": "@nx/js:prune-lockfile",
+      "options": {
+        "buildTarget": "build"
+      },
+      "outputs": ["{workspaceRoot}/dist/apps/mlw-api/package.json", "{workspaceRoot}/dist/apps/mlw-api/package-lock.json"]
+    },
+    "serve": {
+      "configurations": {
+        "development": {
+          "buildTarget": "mlw-api:build:development"
+        },
+        "production": {
+          "buildTarget": "mlw-api:build:production"
+        }
+      },
+      "continuous": false,
+      "defaultConfiguration": "production",
+      "executor": "@nx/js:node",
+      "options": {
+        "buildTarget": "mlw-api:build",
+        "runBuildTargetDependencies": false
+      }
+    },
+    "test": {
+      "cache": true,
+      "executor": "@nx/jest:jest",
+      "inputs": ["default", "^production"],
+      "options": {
+        "jestConfig": "apps/mlw-api/jest.config.cts"
+      },
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"]
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit -p tsconfig.app.json",
+        "cwd": "apps/mlw-api"
+      },
+      "outputs": []
+    }
+  }
+}

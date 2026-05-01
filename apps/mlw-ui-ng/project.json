@@ -1,0 +1,162 @@
+{
+  "name": "mlw-ui-ng",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "mlw-ng",
+  "sourceRoot": "apps/mlw-ui-ng/src",
+  "tags": ["type:app", "domain:mlw-ui-ng", "ui:angular"],
+  "targets": {
+    "build": {
+      "configurations": {
+        "development": {
+          "buildOptimizer": false,
+          "extractLicenses": false,
+          "namedChunks": true,
+          "optimization": false,
+          "sourceMap": true,
+          "vendorChunk": true
+        },
+        "production": {
+          "aot": true,
+          "buildOptimizer": true,
+          "extractLicenses": true,
+          "namedChunks": false,
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "vendorChunk": true,
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ]
+        },
+        "coverage": {
+          "buildOptimizer": false,
+          "extractLicenses": false,
+          "namedChunks": true,
+          "optimization": false,
+          "sourceMap": true,
+          "vendorChunk": true,
+          "customWebpackConfig": {
+            "path": "apps/mlw-ui-ng/webpack.coverage.ts"
+          }
+        }
+      },
+      "defaultConfiguration": "production",
+      "executor": "@angular-builders/custom-webpack:browser",
+      "options": {
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/mlw-ui-ng/public"
+          }
+        ],
+        "index": "apps/mlw-ui-ng/src/index.html",
+        "inlineStyleLanguage": "scss",
+        "main": "apps/mlw-ui-ng/src/main.ts",
+        "outputPath": "dist/apps/mlw-ui-ng",
+        "polyfills": ["zone.js"],
+        "styles": ["apps/mlw-ui-ng/src/styles.scss"],
+        "tsConfig": "apps/mlw-ui-ng/tsconfig.app.json"
+      },
+      "outputs": ["{options.outputPath}"]
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "buildTarget": "mlw-ui-ng:build"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "serve": {
+      "configurations": {
+        "development": {
+          "buildTarget": "mlw-ui-ng:build:development"
+        },
+        "production": {
+          "buildTarget": "mlw-ui-ng:build:production"
+        },
+        "coverage": {
+          "buildTarget": "mlw-ui-ng:build:coverage"
+        }
+      },
+      "continuous": false,
+      "defaultConfiguration": "production",
+      "executor": "@angular-builders/custom-webpack:dev-server",
+      "options": {
+        "port": 4200,
+        "proxyConfig": "apps/mlw-ui-ng/proxy.conf.js"
+      }
+    },
+    "serve-static": {
+      "configurations": {
+        "e2e-cypress-coverage": {
+          "buildTarget": "mlw-ui-ng:build:coverage",
+          "port": 4201
+        },
+        "e2e-cucumber-coverage": {
+          "buildTarget": "mlw-ui-ng:build:coverage",
+          "port": 4202
+        }
+      },
+      "continuous": false,
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "mlw-ui-ng:build",
+        "port": 4200,
+        "spa": true
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit -p tsconfig.app.json",
+        "cwd": "apps/mlw-ui-ng"
+      },
+      "outputs": []
+    },
+    "stack": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "rimraf ./.angular",
+            "description": "Remove Angular cache"
+          },
+          {
+            "command": "nx run mlw-api:serve:development",
+            "description": "Start API Stack (as prerequisite)",
+            "forwardAllArgs": false,
+            "prefix": "MLW-API",
+            "prefixColor": "cyan"
+          },
+          {
+            "command": "wait-on tcp:${API_PORT:-3000} && nx run mlw-ui-ng:serve:development",
+            "description": "Start the Media Library Warden UI (Angular Material)",
+            "prefix": "MLW-UI-NG",
+            "prefixColor": "magenta"
+          }
+        ],
+        "parallel": true
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "apps/mlw-ui-ng/jest.config.cts",
+        "tsConfig": "apps/mlw-ui-ng/tsconfig.spec.json"
+      },
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"]
+    }
+  }
+}

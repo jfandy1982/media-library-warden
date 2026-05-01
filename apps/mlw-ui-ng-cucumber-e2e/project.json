@@ -1,0 +1,58 @@
+{
+  "name": "mlw-ui-ng-cucumber-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/mlw-ui-ng-cucumber-e2e/src",
+  "tags": ["type:e2e", "ui:angular"],
+  "implicitDependencies": ["mlw-ui-ng"],
+  "targets": {
+    "e2e": {
+      "configurations": {
+        "coverage": {
+          "devServerTarget": "mlw-ui-ng:serve:coverage"
+        }
+      },
+      "executor": "@nx/cypress:cypress",
+      "metadata": {
+        "description": "Local: headless, dev-server on port 4200 (no build required)"
+      },
+      "options": {
+        "cypressConfig": "apps/mlw-ui-ng-cucumber-e2e/cypress.config.ts",
+        "devServerTarget": "mlw-ui-ng:serve:development",
+        "testingType": "e2e"
+      },
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"]
+    },
+    "e2e-ci": {
+      "configurations": {
+        "e2e-cucumber-coverage": {
+          "devServerTarget": "mlw-ui-ng:serve-static:e2e-cucumber-coverage"
+        }
+      },
+      "dependsOn": ["mlw-ui-ng:build"],
+      "executor": "@nx/cypress:cypress",
+      "metadata": {
+        "description": "CI/Pipeline: headless, Chrome, serve-static on port 4202 with coverage (requires build)"
+      },
+      "options": {
+        "browser": "chrome",
+        "cypressConfig": "apps/mlw-ui-ng-cucumber-e2e/cypress.config.ts",
+        "devServerTarget": "mlw-ui-ng:serve-static",
+        "testingType": "e2e"
+      },
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"]
+    },
+    "open-cypress": {
+      "executor": "@nx/cypress:cypress",
+      "metadata": {
+        "description": "Local: interactive Cypress GUI, dev-server on port 4200"
+      },
+      "options": {
+        "cypressConfig": "apps/mlw-ui-ng-cucumber-e2e/cypress.config.ts",
+        "devServerTarget": "mlw-ui-ng:serve:development",
+        "testingType": "e2e",
+        "watch": true
+      }
+    }
+  }
+}
