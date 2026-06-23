@@ -61,6 +61,7 @@ experiments
 # Claude Code
 CLAUDE.local.md
 .claude/settings.local.json
+.claude/worktrees
 .superpowers
 docs/superpowers
 docs/sdlc
@@ -71,6 +72,7 @@ Thumbs.db
 
 .nx/cache
 .nx/workspace-data
+.nx/self-healing
 .nx/polygraph
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
