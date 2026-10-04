@@ -1,9 +1,11 @@
 # See https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
+# Common settings across all repositories
+
 # compiled output
-dist
-tmp
-out-tsc
+/dist
+/tmp
+/out-tsc
 
 # TypeScript incremental compilation
 *.tsbuildinfo
@@ -11,72 +13,64 @@ out-tsc
 # dependencies
 node_modules
 
-# Cypress artifacts
-cypress/**/screenshots
-cypress/**/videos
-cypress/**/downloads
+# Runtime logs and telemetry
+.logs/
+*.log
+*.jsonl
 
 # IDEs and editors
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
-
-# IDE - JetBrains
-.idea/*
-!.idea/codeStyles/
-!.idea/inspectionProfiles/
-!.idea/prettier.xml
-!.idea/nx-angular-config.xml
-!.idea/.gitignore
-
-# IDE - VSCode
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-
-# misc
-/.sass-cache
-/connect.lock
-/coverage
-/libpeerconnection.log
-npm-debug.log
-.nyc_output
-yarn-error.log
-testem.log
-/typings
+.idea
+.vscode
 
 # environment variables
 .env
 .env.local
 .env.*.local
+default-env*.json
 
 # experiments / temporary workspace
 experiments
 
 # Claude Code
-CLAUDE.local.md
-.claude/settings.local.json
-.claude/worktrees
+.claude/*
+!.claude/skills/
+!.claude/settings.json
 .superpowers
-docs/superpowers
 docs/sdlc
+docs/superpowers
+
+# Claude Code (local overrides for settings and context)
+CLAUDE.local.md
+# already covered by .claude/*, listed here for documentation
+.claude/settings.local.json
 
 # System Files
 .DS_Store
 Thumbs.db
 
+# Repository-specific settings
+
+# Generated Test Artifacts
+/coverage
+/cypress
+/e2e/
+.nyc_output
+
+# Nx Monorepo Tooling, Caches, Upgrade Migrations
 .nx/cache
 .nx/workspace-data
-.nx/self-healing
 .nx/polygraph
+.nx/self-healing
+.nx/migrate-runs
+/migrations.json
+
+# AI Coding tools (non-Claude)
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
 
-.angular
+# Angular cache
+/.angular
 
-migrations.json
+# Bruno Folder for Request Definition
+bruno/Test Requests Locally/**
+!bruno/Test Requests Locally/.gitkeep
